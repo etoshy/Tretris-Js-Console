@@ -714,7 +714,6 @@ function createMusicButton() {
 // Tela de Game Over
 function gameOver() {
   gameActive = false;
-  stopMusic();
   
   // Limpa o intervalo de contagem regressiva se ainda estiver ativo
   if (countdownInterval) {
@@ -750,8 +749,11 @@ function gameOver() {
   ctx.font = '14px Arial';
   ctx.fillText('Criado por Rivan', canvas.width / 2, 470);
   
-  // Botões
+  // Criar botões
   createGameOverButtons();
+  
+  // Parar a música por último, após renderizar tudo
+  stopMusic();
 }
 
 function createGameOverButtons() {
@@ -846,34 +848,37 @@ function restartGame() {
 
 // Salvar screenshot
 function saveScreenshot() {
-  const link = document.createElement('a');
-  link.download = `TetrisAeC_${playerNickname}_${player.score}.png`;
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+  // Pequeno atraso para garantir que a tela esteja completamente renderizada
+  setTimeout(() => {
+    const link = document.createElement('a');
+    link.download = `TetrisAeC_${playerNickname}_${player.score}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }, 100); // 100ms de atraso para garantir renderização completa
 }
 
 // Copiar screenshot - Versão com tratamento de erro
 function copyScreenshot() {
-  try {
-    canvas.toBlob(blob => {
-      // Verifica se ClipboardItem está disponível
-      if (window.ClipboardItem) {
-        const item = new ClipboardItem({ 'image/png': blob });
-        navigator.clipboard.write([item]).then(() => {
-          alert('Screenshot copiado para a área de transferência!');
-        }).catch(err => {
-          alert('Não foi possível copiar: ' + err.message);
-          console.error('Erro ao copiar para clipboard:', err);
-        });
-      } else {
-        // Fallback para navegadores sem suporte a ClipboardItem
-        alert('Seu navegador não suporta cópia de imagens. Por favor, salve o screenshot.');
-      }
-    });
-  } catch (err) {
-    alert('Erro ao tentar copiar: ' + err.message);
-    console.error('Erro ao criar blob ou acessar clipboard:', err);
-  }
+  setTimeout(() => {
+    try {
+      canvas.toBlob(blob => {
+        if (window.ClipboardItem) {
+          const item = new ClipboardItem({ 'image/png': blob });
+          navigator.clipboard.write([item]).then(() => {
+            alert('Screenshot copiado para a área de transferência!');
+          }).catch(err => {
+            alert('Não foi possível copiar: ' + err.message);
+            console.error('Erro ao copiar para clipboard:', err);
+          });
+        } else {
+          alert('Seu navegador não suporta cópia de imagens. Por favor, salve o screenshot.');
+        }
+      });
+    } catch (err) {
+      alert('Erro ao tentar copiar: ' + err.message);
+      console.error('Erro ao criar blob ou acessar clipboard:', err);
+    }
+  }, 100); // 100ms de atraso para garantir renderização completa
 }
 
 // Game loop
