@@ -27,7 +27,7 @@ let gameActive = true;
 let level = 1;
 let startTime = null;
 let playTime = 0;
-let playerNickname = "Jogador";
+let playerNickname = 'Jogador';
 let dropCounter = 0;
 let dropInterval = 800; // Intervalo inicial será substituído pela dificuldade
 let lastTime = 0;
@@ -39,12 +39,12 @@ let difficulty = 'Difícil'; // Dificuldade padrão alterada para Difícil
 
 // Configurações de dificuldade - Ajustadas para começar com velocidades mais altas
 const difficulties = {
-  'Fácil': { baseInterval: 700, levelStep: 50 },
-  'Médio': { baseInterval: 550, levelStep: 60 },
-  'Difícil': { baseInterval: 400, levelStep: 70 }, // Velocidade inicial mais alta
-  'Hard': { baseInterval: 300, levelStep: 80 },
-  'Extremo': { baseInterval: 200, levelStep: 90 },
-  'Maluquice': { baseInterval: 100, levelStep: 100 }
+  Fácil: { baseInterval: 700, levelStep: 50 },
+  Médio: { baseInterval: 550, levelStep: 60 },
+  Difícil: { baseInterval: 400, levelStep: 70 }, // Velocidade inicial mais alta
+  Hard: { baseInterval: 300, levelStep: 80 },
+  Extremo: { baseInterval: 200, levelStep: 90 },
+  Maluquice: { baseInterval: 100, levelStep: 100 },
 };
 
 // Cores
@@ -56,7 +56,7 @@ const colors = [
   '#f0f000', // O - yellow
   '#00f000', // S - green
   '#a000f0', // T - purple
-  '#f00000'  // Z - red
+  '#f00000', // Z - red
 ];
 
 // Contexto de áudio para sons e música
@@ -64,22 +64,22 @@ const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 // Som simples
 function beep(freq = 600, duration = 0.1, volume = 0.05) {
-    const oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    oscillator.type = 'square';
-    oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
-    oscillator.start();
-    oscillator.stop(audioCtx.currentTime + duration);
+  const oscillator = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
+  oscillator.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+  oscillator.type = 'square';
+  oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+  oscillator.start();
+  oscillator.stop(audioCtx.currentTime + duration);
 }
 
 // Som para quando sobe de nível
 function levelUpSound() {
-    beep(880, 0.1, 0.1);
-    setTimeout(() => beep(1100, 0.1, 0.1), 100);
-    setTimeout(() => beep(1320, 0.2, 0.1), 200);
+  beep(880, 0.1, 0.1);
+  setTimeout(() => beep(1100, 0.1, 0.1), 100);
+  setTimeout(() => beep(1320, 0.2, 0.1), 200);
 }
 
 // Música de fundo do Tetris usando Web Audio API
@@ -93,59 +93,62 @@ musicGain.connect(audioCtx.destination);
 // Notas e durações exatas da música do Tetris
 const tetrisTheme = {
   frequency: [
-    659.25511, 493.8833, 523.25113, 587.32954, 523.25113, 493.8833, 440.0, 440.0, 
-    523.25113, 659.25511, 587.32954, 523.25113, 493.8833, 523.25113, 587.32954, 
-    659.25511, 523.25113, 440.0, 440.0, 440.0, 493.8833, 523.25113, 587.32954, 
-    698.45646, 880.0, 783.99087, 698.45646, 659.25511, 523.25113, 659.25511, 
-    587.32954, 523.25113, 493.8833, 493.8833, 523.25113, 587.32954, 659.25511, 
-    523.25113, 440.0, 440.0
+    659.25511, 493.8833, 523.25113, 587.32954, 523.25113, 493.8833, 440.0,
+    440.0, 523.25113, 659.25511, 587.32954, 523.25113, 493.8833, 523.25113,
+    587.32954, 659.25511, 523.25113, 440.0, 440.0, 440.0, 493.8833, 523.25113,
+    587.32954, 698.45646, 880.0, 783.99087, 698.45646, 659.25511, 523.25113,
+    659.25511, 587.32954, 523.25113, 493.8833, 493.8833, 523.25113, 587.32954,
+    659.25511, 523.25113, 440.0, 440.0,
   ],
   duration: [
-    406.250, 203.125, 203.125, 406.250, 203.125, 203.125, 406.250, 203.125, 
-    203.125, 406.250, 203.125, 203.125, 609.375, 203.125, 406.250, 406.250, 
-    406.250, 406.250, 203.125, 203.125, 203.125, 203.125, 609.375, 203.125, 
-    406.250, 203.125, 203.125, 609.375, 203.125, 406.250, 203.125, 203.125, 
-    406.250, 203.125, 203.125, 406.250, 406.250, 406.250, 406.250, 406.250
-  ]
+    406.25, 203.125, 203.125, 406.25, 203.125, 203.125, 406.25, 203.125,
+    203.125, 406.25, 203.125, 203.125, 609.375, 203.125, 406.25, 406.25, 406.25,
+    406.25, 203.125, 203.125, 203.125, 203.125, 609.375, 203.125, 406.25,
+    203.125, 203.125, 609.375, 203.125, 406.25, 203.125, 203.125, 406.25,
+    203.125, 203.125, 406.25, 406.25, 406.25, 406.25, 406.25,
+  ],
 };
 
 // Função para tocar a música
 function playTetrisTheme() {
   if (musicPlaying) return;
-  
+
   musicPlaying = true;
-  
+
   function playNote(index) {
     if (!musicPlaying) return;
-    
+
     if (index >= tetrisTheme.frequency.length) {
       // Recomeça do início quando terminar todas as notas
       musicPosition = 0;
       playNote(0);
       return;
     }
-    
+
     const note = tetrisTheme.frequency[index];
     const duration = tetrisTheme.duration[index] / 1000; // Converte ms para segundos
-    
+
     const oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
-    
+
     oscillator.type = 'square';
     oscillator.frequency.value = note;
-    
+
     gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration * 0.9);
-    
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.001,
+      audioCtx.currentTime + duration * 0.9
+    );
+
     oscillator.connect(gainNode);
     gainNode.connect(musicGain);
-    
+
     oscillator.start(audioCtx.currentTime);
     oscillator.stop(audioCtx.currentTime + duration);
-    
+
     // Armazena a posição atual na música
     musicPosition = index;
-    
+
     // Agenda a próxima nota
     if (musicPlaying) {
       musicTimeout = setTimeout(() => {
@@ -153,7 +156,7 @@ function playTetrisTheme() {
       }, duration * 1000);
     }
   }
-  
+
   // Começa a tocar a partir da posição atual
   playNote(musicPosition);
 }
@@ -185,23 +188,58 @@ function createMatrix(w, h) {
 // Peças
 const pieces = 'TJLOSZI';
 function createPiece(type) {
-  if (type === 'T') return [[0,0,0],[1,1,1],[0,1,0]];
-  if (type === 'O') return [[2,2],[2,2]];
-  if (type === 'L') return [[0,3,0],[0,3,0],[0,3,3]];
-  if (type === 'J') return [[0,4,0],[0,4,0],[4,4,0]];
-  if (type === 'I') return [[0,5,0,0],[0,5,0,0],[0,5,0,0],[0,5,0,0]];
-  if (type === 'S') return [[0,6,6],[6,6,0],[0,0,0]];
-  if (type === 'Z') return [[7,7,0],[0,7,7],[0,0,0]];
+  if (type === 'T')
+    return [
+      [0, 0, 0],
+      [1, 1, 1],
+      [0, 1, 0],
+    ];
+  if (type === 'O')
+    return [
+      [2, 2],
+      [2, 2],
+    ];
+  if (type === 'L')
+    return [
+      [0, 3, 0],
+      [0, 3, 0],
+      [0, 3, 3],
+    ];
+  if (type === 'J')
+    return [
+      [0, 4, 0],
+      [0, 4, 0],
+      [4, 4, 0],
+    ];
+  if (type === 'I')
+    return [
+      [0, 5, 0, 0],
+      [0, 5, 0, 0],
+      [0, 5, 0, 0],
+      [0, 5, 0, 0],
+    ];
+  if (type === 'S')
+    return [
+      [0, 6, 6],
+      [6, 6, 0],
+      [0, 0, 0],
+    ];
+  if (type === 'Z')
+    return [
+      [7, 7, 0],
+      [0, 7, 7],
+      [0, 0, 0],
+    ];
 }
 
 // Arena e jogador
 const arena = createMatrix(cols, rows);
 let player = {
-  pos: {x: 0, y: 0},
+  pos: { x: 0, y: 0 },
   matrix: null,
   next: createPiece(pieces[Math.floor(Math.random() * pieces.length)]),
   score: 0,
-  linesCleared: 0
+  linesCleared: 0,
 };
 
 // Lógica do jogo
@@ -210,13 +248,16 @@ function updateLevel() {
   // O nível já é calculado com base no número de linhas removidas
   // Mantemos a lógica, já que seu código original já faz isso:
   const newLevel = Math.floor(player.linesCleared / 10) + 1;
-  
+
   if (newLevel > level) {
     level = newLevel;
     // Aumentamos a velocidade mais agressivamente quando o nível sobe
     const diffSettings = difficulties[difficulty];
     // Reduzimos o dropInterval mais rapidamente
-    dropInterval = Math.max(50, diffSettings.baseInterval - (level - 1) * diffSettings.levelStep * 1.5);
+    dropInterval = Math.max(
+      50,
+      diffSettings.baseInterval - (level - 1) * diffSettings.levelStep * 1.5
+    );
     levelUpSound();
     updateUIInfo();
   }
@@ -235,7 +276,7 @@ function arenaSweep() {
     player.linesCleared++;
     ++y;
   }
-  
+
   // Sistema de pontuação clássico do Tetris
   if (rowCount > 0) {
     // Pontuação baseada no número de linhas limpas de uma vez
@@ -257,7 +298,7 @@ function arenaSweep() {
         setTimeout(() => beep(1320, 0.2, 0.2), 100);
         break;
     }
-    
+
     player.score += points;
     beep();
     updateLevel();
@@ -276,7 +317,9 @@ function formatTime(ms) {
   const totalSeconds = Math.floor(ms / 1000);
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
-  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  return `${minutes.toString().padStart(2, '0')}:${seconds
+    .toString()
+    .padStart(2, '0')}`;
 }
 
 // Formatar a hora atual do sistema
@@ -292,9 +335,7 @@ function collide(arena, player) {
   const [m, o] = [player.matrix, player.pos];
   for (let y = 0; y < m.length; ++y) {
     for (let x = 0; x < m[y].length; ++x) {
-      if (m[y][x] !== 0 &&
-         (arena[y + o.y] &&
-          arena[y + o.y][x + o.x]) !== 0) {
+      if (m[y][x] !== 0 && (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0) {
         return true;
       }
     }
@@ -370,7 +411,7 @@ function arenaSweep() {
     rowCount++;
     ++y;
   }
-  
+
   if (rowCount > 0) {
     beep();
     updateLevel();
@@ -381,8 +422,8 @@ function playerReset() {
   player.matrix = player.next;
   player.next = createPiece(pieces[Math.floor(Math.random() * pieces.length)]);
   player.pos.y = 0;
-  player.pos.x = Math.floor(cols/2) - Math.floor(player.matrix[0].length/2);
-  
+  player.pos.x = Math.floor(cols / 2) - Math.floor(player.matrix[0].length / 2);
+
   if (collide(arena, player)) {
     gameOver();
   }
@@ -399,7 +440,8 @@ function updateUIInfo() {
   if (timeElement) timeElement.textContent = `Tempo: ${formatTime(playTime)}`;
   if (scoreElement) scoreElement.textContent = `Pontuação: ${player.score}`;
   if (clockElement) clockElement.textContent = `Hora: ${getCurrentTime()}`;
-  if (difficultyElement) difficultyElement.textContent = `Dificuldade: ${difficulty}`;
+  if (difficultyElement)
+    difficultyElement.textContent = `Dificuldade: ${difficulty}`;
 }
 
 // Desenho
@@ -410,7 +452,12 @@ function drawMatrix(matrix, offset, size = blockSize) {
         ctx.fillStyle = colors[value];
         ctx.fillRect((x + offset.x) * size, (y + offset.y) * size, size, size);
         ctx.strokeStyle = '#000';
-        ctx.strokeRect((x + offset.x) * size, (y + offset.y) * size, size, size);
+        ctx.strokeRect(
+          (x + offset.x) * size,
+          (y + offset.y) * size,
+          size,
+          size
+        );
       }
     });
   });
@@ -425,7 +472,7 @@ function drawGameTitle() {
   titleContainer.style.textAlign = 'center';
   titleContainer.style.color = 'white';
   titleContainer.style.fontFamily = 'Arial, sans-serif';
-  
+
   // Título principal
   const title = document.createElement('h1');
   title.textContent = 'Tetris AeC';
@@ -433,14 +480,14 @@ function drawGameTitle() {
   title.style.margin = '0 0 5px 0';
   title.style.textShadow = '2px 2px 4px rgba(0,0,0,0.5)';
   titleContainer.appendChild(title);
-  
+
   // Slogan
   const slogan = document.createElement('div');
   slogan.textContent = 'Divirta-se um Pouco também, amigo';
   slogan.style.fontSize = '16px';
   slogan.style.marginBottom = '3px';
   titleContainer.appendChild(slogan);
-  
+
   // Nome do criador
   const creator = document.createElement('div');
   creator.textContent = 'Criado por Rivan';
@@ -448,7 +495,7 @@ function drawGameTitle() {
   creator.style.color = '#888';
   creator.style.marginTop = '5px';
   titleContainer.appendChild(creator);
-  
+
   document.body.appendChild(titleContainer);
 }
 
@@ -459,42 +506,54 @@ function drawNextPieceArea() {
   const nextAreaY = 150; // Ajustado para ficar abaixo do título
   const nextAreaWidth = 120;
   const nextAreaHeight = 120;
-  
+
   // Fundo da área
   ctx.fillStyle = '#222';
   ctx.fillRect(nextAreaX, nextAreaY, nextAreaWidth, nextAreaHeight);
   ctx.strokeStyle = '#444';
   ctx.strokeRect(nextAreaX, nextAreaY, nextAreaWidth, nextAreaHeight);
-  
+
   // Título
   ctx.fillStyle = 'white';
   ctx.font = '16px Arial';
   ctx.textAlign = 'left';
   ctx.fillText('Próxima Peça:', nextAreaX, nextAreaY - 10);
-  
+
   // Desenha a peça
   const matrix = player.next;
-  
+
   // Determina as dimensões da peça
   const matrixWidth = matrix[0].length;
   const matrixHeight = matrix.length;
-  
+
   // Calcula o centro da área de visualização em blocos
   const areaWidthInBlocks = nextAreaWidth / smallBlockSize;
   const areaHeightInBlocks = nextAreaHeight / smallBlockSize;
-  
+
   // Calcula o offset para centralizar a peça
-  const offsetX = nextAreaX / smallBlockSize + (areaWidthInBlocks - matrixWidth) / 2;
-  const offsetY = nextAreaY / smallBlockSize + (areaHeightInBlocks - matrixHeight) / 2;
-  
+  const offsetX =
+    nextAreaX / smallBlockSize + (areaWidthInBlocks - matrixWidth) / 2;
+  const offsetY =
+    nextAreaY / smallBlockSize + (areaHeightInBlocks - matrixHeight) / 2;
+
   // Desenha cada bloco da próxima peça
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== 0) {
         ctx.fillStyle = colors[value];
-        ctx.fillRect((x + offsetX) * smallBlockSize, (y + offsetY) * smallBlockSize, smallBlockSize, smallBlockSize);
+        ctx.fillRect(
+          (x + offsetX) * smallBlockSize,
+          (y + offsetY) * smallBlockSize,
+          smallBlockSize,
+          smallBlockSize
+        );
         ctx.strokeStyle = '#000';
-        ctx.strokeRect((x + offsetX) * smallBlockSize, (y + offsetY) * smallBlockSize, smallBlockSize, smallBlockSize);
+        ctx.strokeRect(
+          (x + offsetX) * smallBlockSize,
+          (y + offsetY) * smallBlockSize,
+          smallBlockSize,
+          smallBlockSize
+        );
       }
     });
   });
@@ -532,7 +591,7 @@ let infoContainer;
 function createUI() {
   // Desenha o título do jogo
   drawGameTitle();
-  
+
   // Criar um container para fixar o jogo e a UI na tela
   const gameContainer = document.createElement('div');
   gameContainer.style.position = 'relative';
@@ -541,11 +600,11 @@ function createUI() {
   gameContainer.style.alignItems = 'flex-start';
   gameContainer.style.gap = '10px';
   document.body.appendChild(gameContainer);
-  
+
   // Mover o canvas para dentro do container
   document.body.removeChild(canvas);
   gameContainer.appendChild(canvas);
-  
+
   // Container para informações do jogador - Fixado à direita do tabuleiro
   infoContainer = document.createElement('div');
   infoContainer.style.position = 'relative';
@@ -554,13 +613,13 @@ function createUI() {
   infoContainer.style.color = 'white';
   infoContainer.style.fontFamily = 'Arial, sans-serif';
   gameContainer.appendChild(infoContainer);
-  
+
   // Input para nickname
   const nickLabel = document.createElement('div');
   nickLabel.textContent = 'Nickname:';
   nickLabel.style.marginBottom = '5px';
   infoContainer.appendChild(nickLabel);
-  
+
   nicknameInput = document.createElement('input');
   nicknameInput.type = 'text';
   nicknameInput.value = playerNickname;
@@ -570,47 +629,47 @@ function createUI() {
   nicknameInput.style.background = '#333';
   nicknameInput.style.border = '1px solid #555';
   nicknameInput.style.color = 'white';
-  nicknameInput.addEventListener('input', (e) => {
-    playerNickname = e.target.value || "Jogador";
+  nicknameInput.addEventListener('input', e => {
+    playerNickname = e.target.value || 'Jogador';
   });
   infoContainer.appendChild(nicknameInput);
-  
+
   // Score display
   scoreElement = document.createElement('div');
   scoreElement.textContent = `Pontuação: ${player.score}`;
   scoreElement.style.marginBottom = '10px';
   infoContainer.appendChild(scoreElement);
-  
+
   // Level display
   levelElement = document.createElement('div');
   levelElement.textContent = `Nível: ${level}`;
   levelElement.style.marginBottom = '10px';
   infoContainer.appendChild(levelElement);
-  
+
   // Time display
   timeElement = document.createElement('div');
   timeElement.textContent = 'Tempo: 00:00';
   timeElement.style.marginBottom = '10px';
   infoContainer.appendChild(timeElement);
-  
+
   // Clock display
   clockElement = document.createElement('div');
   clockElement.textContent = `Hora: ${getCurrentTime()}`;
   clockElement.style.marginBottom = '15px';
   infoContainer.appendChild(clockElement);
-  
+
   // Dificuldade display
   difficultyElement = document.createElement('div');
   difficultyElement.textContent = `Dificuldade: ${difficulty}`;
   difficultyElement.style.marginBottom = '10px';
   infoContainer.appendChild(difficultyElement);
-  
+
   // Seletor de dificuldade
   const diffLabel = document.createElement('div');
   diffLabel.textContent = 'Escolha a dificuldade:';
   diffLabel.style.marginBottom = '5px';
   infoContainer.appendChild(diffLabel);
-  
+
   difficultySelector = document.createElement('select');
   difficultySelector.style.padding = '5px';
   difficultySelector.style.width = '120px';
@@ -618,7 +677,7 @@ function createUI() {
   difficultySelector.style.background = '#333';
   difficultySelector.style.border = '1px solid #555';
   difficultySelector.style.color = 'white';
-  
+
   // Adiciona as opções de dificuldade
   Object.keys(difficulties).forEach(diff => {
     const option = document.createElement('option');
@@ -629,38 +688,38 @@ function createUI() {
     }
     difficultySelector.appendChild(option);
   });
-  
-  difficultySelector.addEventListener('change', (e) => {
+
+  difficultySelector.addEventListener('change', e => {
     if (!difficultyChosen) {
       difficulty = e.target.value;
       difficultyElement.textContent = `Dificuldade: ${difficulty}`;
-      
+
       // Atualiza o dropInterval baseado na dificuldade escolhida
       const diffSettings = difficulties[difficulty];
       dropInterval = diffSettings.baseInterval;
     }
   });
-  
+
   infoContainer.appendChild(difficultySelector);
-  
+
   // Contador regressivo
   countdownElement = document.createElement('div');
   countdownElement.textContent = `Tempo para escolher: ${initialChoiceTime}s`;
   countdownElement.style.color = '#ff9900';
   countdownElement.style.marginBottom = '15px';
   infoContainer.appendChild(countdownElement);
-  
+
   // Atualizar o relógio a cada segundo
   setInterval(() => {
     clockElement.textContent = `Hora: ${getCurrentTime()}`;
   }, 1000);
-  
+
   // Iniciar contagem regressiva
   startCountdown();
-  
+
   // Música
   musicButton = createMusicButton();
-  
+
   // Definir o intervalo inicial da dificuldade difícil
   dropInterval = difficulties[difficulty].baseInterval;
 }
@@ -670,16 +729,16 @@ function startCountdown() {
   countdownInterval = setInterval(() => {
     choiceTimeRemaining--;
     countdownElement.textContent = `Tempo para escolher: ${choiceTimeRemaining}s`;
-    
+
     if (choiceTimeRemaining <= 0) {
       clearInterval(countdownInterval);
       difficultyChosen = true;
-      
+
       // Desabilita o seletor de dificuldade
       difficultySelector.disabled = true;
       countdownElement.textContent = 'Dificuldade fixada!';
       countdownElement.style.color = '#00ff00';
-      
+
       // Depois de 3 segundos, remove o elemento de contagem
       setTimeout(() => {
         countdownElement.style.display = 'none';
@@ -701,12 +760,12 @@ function createMusicButton() {
   button.style.border = 'none';
   button.style.borderRadius = '4px';
   button.style.cursor = 'pointer';
-  
+
   button.addEventListener('click', () => {
     toggleMusic();
     button.textContent = musicPlaying ? '🔇 Pausar' : '🎵 Música';
   });
-  
+
   document.body.appendChild(button);
   return button;
 }
@@ -714,22 +773,23 @@ function createMusicButton() {
 // Tela de Game Over
 function gameOver() {
   gameActive = false;
-  
+  stopMusic();
+
   // Limpa o intervalo de contagem regressiva se ainda estiver ativo
   if (countdownInterval) {
     clearInterval(countdownInterval);
   }
-  
+
   // Escurece o jogo
   ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
+
   // Título Game Over
   ctx.fillStyle = '#f00';
   ctx.font = 'bold 36px Arial';
   ctx.textAlign = 'center';
   ctx.fillText('GAME OVER', canvas.width / 2, 150);
-  
+
   // Informações do jogo
   ctx.fillStyle = '#fff';
   ctx.font = '20px Arial';
@@ -739,7 +799,7 @@ function gameOver() {
   ctx.fillText(`Dificuldade: ${difficulty}`, canvas.width / 2, 290);
   ctx.fillText(`Tempo: ${formatTime(playTime)}`, canvas.width / 2, 320);
   ctx.fillText(`Hora: ${getCurrentTime()}`, canvas.width / 2, 350);
-  
+
   // Logo do jogo
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 32px Arial';
@@ -748,12 +808,9 @@ function gameOver() {
   ctx.fillText('Divirta-se um Pouco também, amigo', canvas.width / 2, 440);
   ctx.font = '14px Arial';
   ctx.fillText('Criado por Rivan', canvas.width / 2, 470);
-  
-  // Criar botões
+
+  // Botões
   createGameOverButtons();
-  
-  // Parar a música por último, após renderizar tudo
-  stopMusic();
 }
 
 function createGameOverButtons() {
@@ -767,7 +824,7 @@ function createGameOverButtons() {
   buttonContainer.style.justifyContent = 'center';
   buttonContainer.style.gap = '20px';
   document.body.appendChild(buttonContainer);
-  
+
   // Botão de reiniciar - Cores menos vibrantes
   const restartBtn = document.createElement('button');
   restartBtn.textContent = '🔄 Reiniciar Jogo';
@@ -779,7 +836,7 @@ function createGameOverButtons() {
   restartBtn.style.cursor = 'pointer';
   restartBtn.addEventListener('click', restartGame);
   buttonContainer.appendChild(restartBtn);
-  
+
   // Botão para salvar screenshot - Cores menos vibrantes
   const saveBtn = document.createElement('button');
   saveBtn.textContent = '💾 Salvar Screenshot';
@@ -791,7 +848,7 @@ function createGameOverButtons() {
   saveBtn.style.cursor = 'pointer';
   saveBtn.addEventListener('click', saveScreenshot);
   buttonContainer.appendChild(saveBtn);
-  
+
   // Botão para copiar screenshot - Cores menos vibrantes
   const copyBtn = document.createElement('button');
   copyBtn.textContent = '📋 Copiar Screenshot';
@@ -813,7 +870,7 @@ function restartGame() {
       btn.remove();
     }
   });
-  
+
   // Reseta variáveis
   arena.forEach(row => row.fill(0));
   player.score = 0;
@@ -825,21 +882,21 @@ function restartGame() {
   gameActive = true;
   startTime = Date.now();
   playTime = 0;
-  
+
   // Reseta a contagem regressiva de escolha de dificuldade
   choiceTimeRemaining = initialChoiceTime;
   difficultyChosen = false;
-  
+
   // Reativa o seletor de dificuldade e mostra o contador
   difficultySelector.disabled = false;
   countdownElement.style.display = 'block';
   countdownElement.style.color = '#ff9900';
   countdownElement.textContent = `Tempo para escolher: ${choiceTimeRemaining}s`;
-  
+
   // Reinicia a contagem regressiva
   clearInterval(countdownInterval);
   startCountdown();
-  
+
   // Reinicia o jogo
   playerReset();
   updateScore();
@@ -864,14 +921,19 @@ function copyScreenshot() {
       canvas.toBlob(blob => {
         if (window.ClipboardItem) {
           const item = new ClipboardItem({ 'image/png': blob });
-          navigator.clipboard.write([item]).then(() => {
-            alert('Screenshot copiado para a área de transferência!');
-          }).catch(err => {
-            alert('Não foi possível copiar: ' + err.message);
-            console.error('Erro ao copiar para clipboard:', err);
-          });
+          navigator.clipboard
+            .write([item])
+            .then(() => {
+              alert('Screenshot copiado para a área de transferência!');
+            })
+            .catch(err => {
+              alert('Não foi possível copiar: ' + err.message);
+              console.error('Erro ao copiar para clipboard:', err);
+            });
         } else {
-          alert('Seu navegador não suporta cópia de imagens. Por favor, salve o screenshot.');
+          alert(
+            'Seu navegador não suporta cópia de imagens. Por favor, salve o screenshot.'
+          );
         }
       });
     } catch (err) {
@@ -884,18 +946,18 @@ function copyScreenshot() {
 // Game loop
 function update(time = 0) {
   if (!gameActive) return;
-  
+
   if (startTime === null) {
     startTime = Date.now();
   }
-  
+
   // Atualiza o tempo de jogo
   playTime = Date.now() - startTime;
   updateUIInfo();
-  
+
   const deltaTime = time - lastTime;
   lastTime = time;
-  
+
   dropCounter += deltaTime;
   if (dropCounter > dropInterval) {
     playerDrop();
@@ -906,10 +968,10 @@ function update(time = 0) {
 
   // Área principal
   ctx.strokeStyle = 'white';
-  ctx.strokeRect(0, 0, blockSize*cols, blockSize*rows);
+  ctx.strokeRect(0, 0, blockSize * cols, blockSize * rows);
 
   drawGrid();
-  drawMatrix(arena, {x:0, y:0});
+  drawMatrix(arena, { x: 0, y: 0 });
   drawMatrix(player.matrix, player.pos);
 
   // Área próxima peça
@@ -921,7 +983,7 @@ function update(time = 0) {
 // Controles
 document.addEventListener('keydown', event => {
   if (!gameActive) return;
-  
+
   if (event.key === 'ArrowLeft') {
     playerMove(-1);
   } else if (event.key === 'ArrowRight') {
