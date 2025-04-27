@@ -764,10 +764,26 @@ function restartGame() {
   player.score = 0;
   player.linesCleared = 0;
   level = 1;
-  dropInterval = 800;
+  // Mantém a dificuldade atual mas reseta o intervalo
+  const diffSettings = difficulties[difficulty];
+  dropInterval = diffSettings.baseInterval;
   gameActive = true;
   startTime = Date.now();
   playTime = 0;
+  
+  // Reseta a contagem regressiva de escolha de dificuldade
+  choiceTimeRemaining = initialChoiceTime;
+  difficultyChosen = false;
+  
+  // Reativa o seletor de dificuldade e mostra o contador
+  difficultySelector.disabled = false;
+  countdownElement.style.display = 'block';
+  countdownElement.style.color = '#ff9900';
+  countdownElement.textContent = `Tempo para escolher: ${choiceTimeRemaining}s`;
+  
+  // Reinicia a contagem regressiva
+  clearInterval(countdownInterval);
+  startCountdown();
   
   // Reinicia o jogo
   playerReset();
