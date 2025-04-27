@@ -265,14 +265,12 @@ function arenaSweep() {
 }
 
 // Configurações de dificuldade - Velocidades iniciais mais rápidas
-const difficulties = {
-  'Fácil': { baseInterval: 600, levelStep: 60 },     // Mais rápido que o original
-  'Médio': { baseInterval: 450, levelStep: 70 },     // Mais rápido que o original
-  'Difícil': { baseInterval: 300, levelStep: 80 },   // Mais rápido que o original
-  'Hard': { baseInterval: 200, levelStep: 90 },      // Mais rápido que o original
-  'Extremo': { baseInterval: 150, levelStep: 100 },  // Mais rápido que o original
-  'Maluquice': { baseInterval: 80, levelStep: 110 }  // Mais rápido que o original
-}
+difficulties['Fácil'] = { baseInterval: 600, levelStep: 60 };
+difficulties['Médio'] = { baseInterval: 450, levelStep: 70 };
+difficulties['Difícil'] = { baseInterval: 300, levelStep: 80 };
+difficulties['Hard'] = { baseInterval: 200, levelStep: 90 };
+difficulties['Extremo'] = { baseInterval: 150, levelStep: 100 };
+difficulties['Maluquice'] = { baseInterval: 80, levelStep: 110 };
 
 function formatTime(ms) {
   const totalSeconds = Math.floor(ms / 1000);
